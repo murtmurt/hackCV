@@ -340,7 +340,7 @@ def run():
 			dictionary = {
 				"timestamp": round(time.time()),
 				"popChange": x[0] - tempX,
-				"avgROC": None if np.isnan(dydx[len(dydx) - 1]) else dydx[len(dydx) - 1]
+				"avgROC": None if np.isnan(dydx[len(dydx) - 1]) or np.isinf(dydx[len(dydx) - 1]) else dydx[len(dydx) - 1]
 			}
 			with open("log.json", "a") as outfile:
 				json.dump(dictionary, outfile)
@@ -350,19 +350,6 @@ def run():
 			count += 1
 			tempX = x[0]
 			timestamp = round(time.time()) + delta
-		
-		# if time.time() >= hour:
-		# 	dictionary1 = {
-		# 		"endTime": round(time.time()),
-		# 		"lowerBoundPop": startPop,
-		# 		"upperBoundPop": x[0],
-		# 		"rocPerHour": x[0] - startPop
-		# 	}
-		# 	with open("hourlyROC.json", "a") as f:
-		# 		json.dump(dictionary1, f)
-		# 		f.write("\n")
-		# 	startPop = x[0]
-		# 	hour = round(time.time()) + hourlyDelta
 
 	# stop the timer and display FPS information
 	fps.stop()
