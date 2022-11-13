@@ -9,8 +9,7 @@ import numpy as np
 import argparse, imutils
 import time, dlib, cv2, datetime
 from itertools import zip_longest
-import json
-import requests
+import json, requests
 
 t0 = time.time()
 url1 = "https://facespacefaas.azurewebsites.net/api/update?"
@@ -95,6 +94,7 @@ def run():
 	hour = round(time.time()) + hourlyDelta
 	startPop = 0
 	count = 0
+	count2 = 0
 	# loop over frames from the video stream
 	while True:
 		# grab the next frame and handle if we are reading from either
@@ -162,7 +162,7 @@ def run():
 
 					# compute the (x, y)-coordinates of the bounding box
 					# for the object
-					box = detections[0, 0, i, 3:7] * np.array([W - 50, H - 50, W + 50, H + 50])
+					box = detections[0, 0, i, 3:7] * np.array([W, H, W, H])
 					(startX, startY, endX, endY) = box.astype("int")
 
 					# construct a dlib rectangle object from the bounding
@@ -175,7 +175,6 @@ def run():
 					# add the tracker to our list of trackers so we can
 					# utilize it during skip frames
 					trackers.append(tracker)
-
 
 		# otherwise, we should utilize our object *trackers* rather than
 		# object *detectors* to obtain a higher frame processing throughput
@@ -316,6 +315,8 @@ def run():
 		# show the output frame
 		cv2.imshow("Real-Time Monitoring/Analysis Window", frame)
 		key = cv2.waitKey(1) & 0xFF
+		cv2.imwrite("frames\\frame%d.jpg"%count2, frame)
+		count2 += 1
 
 		# if the `q` key was pressed, break from the loop
 		if key == ord("q"):
@@ -356,7 +357,6 @@ def run():
 	print("[INFO] elapsed time: {:.2f}".format(fps.elapsed()))
 	print("[INFO] approx. FPS: {:.2f}".format(fps.fps()))
 
-
 	# # if we are not using a video file, stop the camera video stream
 	# if not args.get("input", False):
 	# 	vs.stop()
@@ -371,7 +371,6 @@ def run():
 
 	# close any open windows
 	cv2.destroyAllWindows()
-
 
 ##learn more about different schedules here: https://pypi.org/project/schedule/
 if config.Scheduler:
