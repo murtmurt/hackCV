@@ -1,0 +1,7 @@
+version: "3"
+
+services:
+  hackCV:
+    build: .
+    command:  python3 run.py --prototxt mobilenet_ssd/MobileNetSSD_deploy.prototxt --model mobilenet_ssd/MobileNetSSD_deploy.caffemodel
+    restart: unless-stopped
