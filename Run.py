@@ -10,11 +10,15 @@ import argparse, imutils
 import time, dlib, cv2, datetime
 from itertools import zip_longest
 import json, requests
+import os, glob
 
 t0 = time.time()
 url1 = "https://facespacefaas.azurewebsites.net/api/update?"
 
 def run():
+	files = glob.glob('frames\*')
+	for f in files:
+		os.remove(f)
 
 	# construct the argument parse and parse the arguments
 	ap = argparse.ArgumentParser()
@@ -97,6 +101,10 @@ def run():
 	count2 = 0
 	# loop over frames from the video stream
 	while True:
+		# if count2 % 4000 == 0:
+		# 	for f in files:
+		# 		os.remove(f)
+
 		# grab the next frame and handle if we are reading from either
 		# VideoCapture or VideoStream
 		frame = vs.read()
@@ -201,7 +209,7 @@ def run():
 		# draw a horizontal line in the center of the frame -- once an
 		# object crosses this line we will determine whether they were
 		# moving 'up' or 'down'
-		lineYpos = H // 2
+		lineYpos = H - 20
 		cv2.line(frame, (0, lineYpos), (W, lineYpos), (0, 0, 0), 3)
 		cv2.putText(frame, "-Prediction border - Entrance-", (10, H - ((i * 20) + 200)),
 			cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1)
@@ -285,7 +293,7 @@ def run():
 		]
 
 		info2 = [
-		("Total people inside", x),
+		("Net total inside", x),
 		]
 
                 # Display the output
@@ -295,7 +303,7 @@ def run():
 
 		for (i, (k, v)) in enumerate(info2):
 			text = "{}: {}".format(k, v)
-			cv2.putText(frame, text, (265, H - ((i * 20) + 60)), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
+			cv2.putText(frame, text, (265, H - ((i * 20) + 60)), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 0), 2)
 
 		# Initiate a simple log to save data at end of the day
 		if config.Log:
@@ -305,7 +313,7 @@ def run():
 
 			with open('Log.csv', 'w', newline='') as myfile:
 				wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
-				wr.writerow(("End Time", "In", "Out", "Total Inside"))
+				wr.writerow(("End Time", "In", "Out", "Net Total Inside"))
 				wr.writerows(export_data)
 				
 		# check to see if we should write the frame to disk
