@@ -93,10 +93,7 @@ def run():
 		vs = thread.ThreadingClass(config.url)
 
 	delta = 5
-	hourlyDelta = 120
 	timestamp = round(time.time())
-	hour = round(time.time()) + hourlyDelta
-	startPop = 0
 	count = 0
 	count2 = 0
 	# loop over frames from the video stream
@@ -209,7 +206,7 @@ def run():
 		# draw a horizontal line in the center of the frame -- once an
 		# object crosses this line we will determine whether they were
 		# moving 'up' or 'down'
-		lineYpos = H - 20
+		lineYpos = 200
 		cv2.line(frame, (0, lineYpos), (W, lineYpos), (0, 0, 0), 3)
 		cv2.putText(frame, "-Prediction border - Entrance-", (10, H - ((i * 20) + 200)),
 			cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1)
